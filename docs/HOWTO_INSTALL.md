@@ -24,6 +24,8 @@ sh scripts/install.sh</code></pre>
   <li>Restart any open applications or log out and in again.</li>
 </ol>
 
+<b>Important note to Firefox users:</b> For Firefox to be able to use these themes you'll need to open `about:config` and set `widget.gtk.libadwaita-colors.enabled` to `false`.
+
 <details>
   <summary><h3>🛠 Manual Installation</h3></summary>
 
