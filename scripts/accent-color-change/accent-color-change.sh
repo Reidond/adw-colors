@@ -55,17 +55,19 @@ if [ "$choice" -ge 1 ] && [ "$choice" -le 9 ]; then
   # Apply accent color with gsettings
   gsettings set org.gnome.desktop.interface accent-color "$selected_color"
 
+  # Handle backup and file creation in a loop
+  for file in $gtk_files; do
+    if [ -f "$file" ]; then
+      cp "$file" "${file}.${backup_number}.bak"
+      echo "Backup created: ${file}.${backup_number}.bak"
+    fi
+  done
+
   # unlink any previous themes
   unlink "$HOME/.config/gtk-3.0/gtk.css" 2>/dev/null
   unlink "$HOME/.config/gtk-4.0/gtk.css" 2>/dev/null
   unlink "$HOME/.config/gtk-3.0/assets" 2>/dev/null
   unlink "$HOME/.config/gtk-4.0/assets" 2>/dev/null
-
-  # Handle backup and file creation in a loop
-  for file in $gtk_files; do
-    [ -f "$file" ] && cp "$file" "${file}.${backup_number}.bak" && echo "Backup created: ${file}.${backup_number}.bak"
-    mkdir -p "$(dirname -- "$file")" && touch "$file"
-  done
 
   # Write styles
   echo ":root { --accent-bg-color: var(--accent-$selected_color); }" > "$HOME/.config/gtk-4.0/gtk.css"
