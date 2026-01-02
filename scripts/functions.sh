@@ -143,41 +143,43 @@ apply_theme_auto() {
     exit 1
   }
 
-  # Create wrapper gtk.css that imports based on current color scheme
-  # GTK4 supports prefers-color-scheme, GTK3 needs manual switching
-  cat > "${gtk4_file}" << 'EOF'
-/* Auto Light/Dark theme - switches based on system color scheme */
-@import url("gtk-light.css") (prefers-color-scheme: light);
-@import url("gtk-light.css") (prefers-color-scheme: no-preference);
-@import url("gtk-dark.css") (prefers-color-scheme: dark);
-EOF
-
-  # For GTK3, we need to detect current scheme and import the right file
+  # Detect current scheme and set appropriate theme
+  # GTK doesn't support CSS media queries, so we import the right file directly
   current_scheme=$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null || echo "'default'")
   if echo "$current_scheme" | grep -q "dark"; then
+    cat > "${gtk4_file}" << 'EOF'
+/* Auto theme - use switch-theme.sh to change variants */
+@import url("gtk-dark.css");
+EOF
     cat > "${gtk3_file}" << 'EOF'
-/* Auto theme - run install.sh again or use the switch script to change variants */
+/* Auto theme - use switch-theme.sh to change variants */
 @import url("gtk-dark.css");
 EOF
     gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark"
   else
+    cat > "${gtk4_file}" << 'EOF'
+/* Auto theme - use switch-theme.sh to change variants */
+@import url("gtk-light.css");
+EOF
     cat > "${gtk3_file}" << 'EOF'
-/* Auto theme - run install.sh again or use the switch script to change variants */
+/* Auto theme - use switch-theme.sh to change variants */
 @import url("gtk-light.css");
 EOF
     gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3"
   fi
 
-  # Create a helper script for switching GTK3 theme
+  # Create a helper script for switching theme variant (both GTK3 and GTK4)
   switch_script="$gtk3_dir/switch-theme.sh"
   cat > "$switch_script" << 'SWITCH_EOF'
 #!/bin/sh
-# Helper script to switch GTK3 theme variant
+# Helper script to switch GTK theme variant
 # Usage: switch-theme.sh [light|dark]
 # Without arguments, it toggles based on current color-scheme
 
 gtk3_dir="$HOME/.config/gtk-3.0"
+gtk4_dir="$HOME/.config/gtk-4.0"
 gtk3_file="$gtk3_dir/gtk.css"
+gtk4_file="$gtk4_dir/gtk.css"
 
 current_scheme=$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null || echo "'default'")
 
@@ -185,11 +187,17 @@ if [ "$1" = "light" ] || { [ -z "$1" ] && echo "$current_scheme" | grep -q "dark
   cat > "$gtk3_file" << 'EOF'
 @import url("gtk-light.css");
 EOF
+  cat > "$gtk4_file" << 'EOF'
+@import url("gtk-light.css");
+EOF
   gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3"
   gsettings set org.gnome.desktop.interface color-scheme "default"
   echo "Switched to light theme"
 elif [ "$1" = "dark" ] || { [ -z "$1" ] && ! echo "$current_scheme" | grep -q "dark"; }; then
   cat > "$gtk3_file" << 'EOF'
+@import url("gtk-dark.css");
+EOF
+  cat > "$gtk4_file" << 'EOF'
 @import url("gtk-dark.css");
 EOF
   gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3-dark"

@@ -3,11 +3,16 @@
 # This script monitors KDE Plasma color scheme changes and switches GTK themes accordingly
 
 GTK3_DIR="$HOME/.config/gtk-3.0"
+GTK4_DIR="$HOME/.config/gtk-4.0"
 GTK3_FILE="$GTK3_DIR/gtk.css"
+GTK4_FILE="$GTK4_DIR/gtk.css"
 
 switch_to_light() {
     echo "[$(date)] Switching to light theme..."
     cat > "$GTK3_FILE" << 'EOF'
+@import url("gtk-light.css");
+EOF
+    cat > "$GTK4_FILE" << 'EOF'
 @import url("gtk-light.css");
 EOF
     # For systems with both GNOME and KDE settings
@@ -20,6 +25,9 @@ EOF
 switch_to_dark() {
     echo "[$(date)] Switching to dark theme..."
     cat > "$GTK3_FILE" << 'EOF'
+@import url("gtk-dark.css");
+EOF
+    cat > "$GTK4_FILE" << 'EOF'
 @import url("gtk-dark.css");
 EOF
     # For systems with both GNOME and KDE settings
