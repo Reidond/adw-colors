@@ -1,0 +1,25 @@
+// This file contains the main colors for the theme
+
+@use '../../abstracts/settings' as *;
+
+// Breeze palette
+// light theme / dark theme
+$red:          if($variant == 'light', #da4453, #da4453);
+$orange:       if($variant == 'light', #f67400, #f67400);
+$yellow:       if($variant == 'light', #fdbc4b, #fdbc4b);
+$green:        if($variant == 'light', #27ae60, #27ae60);
+$blue:         if($variant == 'light', #3daee9, #3daee9);
+$cyan:         if($variant == 'light', #3daee9, #3daee9); // also known as aqua or teal
+$purple:       if($variant == 'light', #9b59b6, #9b59b6); // also known as magneta
+$pink:         if($variant == 'light', #e91e63, #e91e63);
+$slate:        if($variant == 'light', #7f8c8d, #7f8c8d); // also know as grey or carbon
+
+$window_bg:    if($variant == 'light', #eff0f1, #31363b); // window bg
+$window_fg:    if($variant == 'light', #232629, #eff0f1); // window text
+
+$view_bg:      if($variant == 'light', #ffffff, #232629); // textviews and view bg
+$view_fg:      if($variant == 'light', #232629, #eff0f1); // view text
+
+$header_bg:    if($variant == 'light', #e6e7e8, #2b2f33); // Headerbar and sidebars
+$header_fg:    if($variant == 'light', #232629, #eff0f1);
+$menu_bg:      if($variant == 'light', #ffffff, #2b2f33); // Popovers and menus
