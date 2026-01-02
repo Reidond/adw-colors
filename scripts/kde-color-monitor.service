@@ -1,0 +1,12 @@
+[Unit]
+Description=KDE Color Scheme Monitor for adw-colors GTK themes
+After=plasma-plasmashell.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/kde-color-monitor.sh --daemon
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
